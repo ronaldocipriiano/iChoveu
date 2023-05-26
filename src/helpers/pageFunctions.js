@@ -103,8 +103,8 @@ export function createCityElement(cityInfo) {
 
   cityElement.appendChild(headingElement);
   cityElement.appendChild(infoContainer);
-
-  return cityElement;
+  const citiesContainer = document.getElementById('cities');
+  return citiesContainer.appendChild(cityElement);
 }
 
 /**
@@ -117,4 +117,9 @@ export async function handleSearch(event) {
   const searchValue = searchInput.value;
   const resultSearchCities = await searchCities(searchValue);
   console.log(resultSearchCities);
+  const promises = resultSearchCities.map(({ url }) => getWeatherByCity(url));
+  const cities = await Promise.all(promises);
+  cities.forEach((city) => {
+    createCityElement(city);
+  });
 }
