@@ -1,16 +1,15 @@
 const TOKEN = import.meta.env.VITE_TOKEN;
 
 export const searchCities = async (term) => {
-  const response = await fetch(`http://api.weatherapi.com/v1/search.json?lang=pt&key=${TOKEN}&q=${term}`);
+  const response = await fetch(`https://api.weatherapi.com/v1/search.json?lang=pt&key=${TOKEN}&q=${term}`);
   const data = await response.json();
-  console.log('searchCities:', data);
 
   if (!data.length) window.alert('Nenhuma cidade encontrada');
   return data;
 };
 
 export const getWeatherByCity = async (cityURL) => {
-  const response = await fetch(`http://api.weatherapi.com/v1/current.json?lang=pt&key=${TOKEN}&q=${cityURL}`);
+  const response = await fetch(`https://api.weatherapi.com/v1/current.json?lang=pt&key=${TOKEN}&q=${cityURL}`);
   const data = await response.json();
   const { current, location } = data;
   return {
@@ -24,7 +23,7 @@ export const getWeatherByCity = async (cityURL) => {
 };
 
 export const fetchForecast = async (cityInfo) => {
-  const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${TOKEN}&q=${cityInfo}&days=7`);
+  const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?lang=pt&key=${TOKEN}&q=${cityInfo}&days=7`);
   const data = await response.json();
 
   const forecastData = data.forecast.forecastday.map((day) => ({
