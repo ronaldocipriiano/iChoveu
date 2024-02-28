@@ -1,15 +1,12 @@
 const TOKEN = import.meta.env.VITE_TOKEN;
 
-export const searchCities = (term) => {
-  return fetch(`http://api.weatherapi.com/v1/search.json?lang=pt&key=${TOKEN}&q=${term}`)
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.length === 0) {
-        window.alert('Nenhuma cidade encontrada');
-      }
-      console.log(data);
-      return data;
-    });
+export const searchCities = async (term) => {
+  const response = await fetch(`http://api.weatherapi.com/v1/search.json?lang=pt&key=${TOKEN}&q=${term}`);
+  const data = await response.json();
+  console.log('searchCities:', data);
+
+  if (!data.length) window.alert('Nenhuma cidade encontrada');
+  return data;
 };
 
 export const getWeatherByCity = async (cityURL) => {
@@ -22,5 +19,20 @@ export const getWeatherByCity = async (cityURL) => {
     temp: current.temp_c,
     condition: current.condition.text,
     icon: current.condition.icon,
+    url: cityURL,
   };
+};
+
+export const fetchForecast = async (cityInfo) => {
+  const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${TOKEN}&q=${cityInfo}&days=7`);
+  const data = await response.json();
+
+  const forecastData = data.forecast.forecastday.map((day) => ({
+    date: day.date,
+    maxTemp: day.day.maxtemp_c,
+    minTemp: day.day.mintemp_c,
+    condition: day.day.condition.text,
+    icon: day.day.condition.icon,
+  }));
+  return forecastData;
 };

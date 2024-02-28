@@ -1,10 +1,5 @@
-import { getWeatherByCity, searchCities } from './weatherAPI';
+import { getWeatherByCity, searchCities, fetchForecast } from './weatherAPI';
 
-const TOKEN = import.meta.env.VITE_TOKEN;
-
-/**
- * Cria um elemento HTML com as informações passadas
- */
 function createElement(tagName, className, textContent = '') {
   const element = document.createElement(tagName);
   element.classList.add(...className.split(' '));
@@ -12,9 +7,6 @@ function createElement(tagName, className, textContent = '') {
   return element;
 }
 
-/**
- * Recebe as informações de uma previsão e retorna um elemento HTML
- */
 function createForecast(forecast) {
   const { date, maxTemp, minTemp, condition, icon } = forecast;
 
@@ -50,9 +42,6 @@ function createForecast(forecast) {
   return forecastElement;
 }
 
-/**
- * Limpa todos os elementos filhos de um dado elemento
- */
 function clearChildrenById(elementId) {
   const citiesList = document.getElementById(elementId);
   while (citiesList.firstChild) {
@@ -60,9 +49,6 @@ function clearChildrenById(elementId) {
   }
 }
 
-/**
- * Recebe uma lista de previsões e as exibe na tela dentro de um modal
- */
 export function showForecast(forecastList) {
   const forecastContainer = document.getElementById('forecast-container');
   const weekdayContainer = document.getElementById('weekdays');
@@ -75,29 +61,8 @@ export function showForecast(forecastList) {
   forecastContainer.classList.remove('hidden');
 }
 
-async function fetchForecast(cityInfo) {
-  try {
-    const response = await fetch(`http://api.weatherapi.com/v1/forecast.json?lang=pt&key=${TOKEN}&q=${cityInfo.url}&days=7`);
-    const data = await response.json();
-
-    const forecastData = data.forecast.forecastday.map((day) => ({
-      date: day.date,
-      maxTemp: day.day.maxtemp_c,
-      minTemp: day.day.mintemp_c,
-      condition: day.day.condition.text,
-      icon: day.day.condition.icon,
-    }));
-
-    showForecast(forecastData);
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-/**
- * Recebe um objeto com as informações de uma cidade e retorna um elemento HTML
- */
 export function createCityElement(cityInfo) {
-  const { name, country, temp, condition, icon /* , url */ } = cityInfo;
+  const { name, country, temp, condition, icon, url } = cityInfo;
 
   const cityElement = createElement('li', 'city');
 
@@ -121,31 +86,29 @@ export function createCityElement(cityInfo) {
   infoContainer.appendChild(tempContainer);
   infoContainer.appendChild(iconElement);
 
-  const forecastButton = createElement('button', 'forecast-button', 'Ver previsão');
-  forecastButton.addEventListener('click', () => {
-    fetchForecast(cityInfo);
-  });
-
   cityElement.appendChild(headingElement);
   cityElement.appendChild(infoContainer);
+
+  const forecastButton = createElement('button', 'forecast-button', 'Ver previsão');
   cityElement.appendChild(forecastButton);
-  const citiesContainer = document.getElementById('cities');
-  return citiesContainer.appendChild(cityElement);
+  forecastButton.addEventListener('click', async () => {
+    const forecast = await fetchForecast(url);
+    await showForecast(forecast);
+  });
+  return cityElement;
 }
 
-/**
- * Lida com o evento de submit do formulário de busca
- */
 export async function handleSearch(event) {
   event.preventDefault();
   clearChildrenById('cities');
   const searchInput = document.getElementById('search-input');
   const searchValue = searchInput.value;
-  const resultSearchCities = await searchCities(searchValue);
-  console.log(resultSearchCities);
-  const promises = resultSearchCities.map(({ url }) => getWeatherByCity(url));
-  const cities = await Promise.all(promises);
-  cities.forEach((city) => {
-    createCityElement(city);
+  if (!searchValue) return;
+  const cities = await searchCities(searchValue);
+  const citiesList = document.getElementById('cities');
+  cities.forEach(async (city) => {
+    const cityInfo = await getWeatherByCity(city.url);
+    const cityElement = createCityElement(cityInfo);
+    citiesList.appendChild(cityElement);
   });
 }
