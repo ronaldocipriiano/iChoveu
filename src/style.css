@@ -5,10 +5,15 @@
 }
 
 :root {
+
   --main-color: rgb(0, 151, 219);
+
   --button-color: white;
+
   --border-color: rgb(0, 176, 255);
+
   --text-color: rgb(51, 51, 51);
+
   --placeholder-color: lightgray;
 }
 
@@ -255,20 +260,23 @@ footer {
   font-size: 16px;
 }
 
-
 @media (max-width: 1000px) {
+
   ul {
     padding: 70px 20px;
   }
+
   .city {
     width: calc(100% / 2 - 60px);
   }
 }
 
 @media (max-width: 600px) {
+
   ul {
     padding: 70px 10px;
   }
+
   .city {
     width: calc(100% - 60px);
   }
@@ -288,13 +296,9 @@ footer {
   }
   
   #search-input {
-    padding: 10px 10px;
+    padding: 10px;
     font-size: 20px;
     margin: 10px 0;
-  }
-
-  header img {
-    font-size: 24px;
   }
 
   .city-name {
@@ -357,7 +361,7 @@ footer {
     font-size: 10px;
   }
 
-  .max, .min {
+  .max .min {
     font-size: 8px;
   }
 
