@@ -290,11 +290,11 @@ footer {
     width: 80px;
     margin-bottom: 10px;
   }
-  
+
   header form {
     width: 100%;
   }
-  
+
   #search-input {
     padding: 10px;
     font-size: 20px;
@@ -336,6 +336,7 @@ footer {
 }
 
 @media (max-width: 400px) {
+  
   .city-name {
     font-size: 24px;
   }
