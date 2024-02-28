@@ -261,7 +261,6 @@ footer {
 }
 
 @media (max-width: 1000px) {
-
   ul {
     padding: 70px 20px;
   }
@@ -272,7 +271,6 @@ footer {
 }
 
 @media (max-width: 600px) {
-
   ul {
     padding: 70px 10px;
   }
@@ -326,7 +324,7 @@ footer {
     font-size: 12px;
   }
 
-  .max, .min {
+  .max .min {
     font-size: 10px;
   }
 
@@ -336,7 +334,6 @@ footer {
 }
 
 @media (max-width: 400px) {
-  
   .city-name {
     font-size: 24px;
   }
